@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+<article class="row scroll-y" role="main">
+    <h1>
+        Dashboard
+        <input id="DashboardDate" type="date" value="Today" />
+    </h1>
+    <section id="SalesHistory">
+        <h2>
+            Sales Volume</h2>
+        <div id="MainChart">
+        </div>
+    </section>
+    <section id="RecentActivity">
+        <h2>
+            Recent Activity</h2>
+        <ul>
+        </ul>
+    </section>
+    <section id="KeyPerformanceIndicators">
+        <h2>
+            Key Performance Indicators</h2>
+        <ul>
+            <li id="RecentOrders"><strong>46</strong> Orders</li>
+            <li id="AverageOrderValue"><strong>$125.64</strong> Average Order Value</li>
+            <li id="NewCustomerRatio"><strong>33.45%</strong> New Customer Ratio</li>
+            <li id="UniqueSiteVisitors"><strong>123</strong> Unique Site Visitors</li>
+        </ul>
+    </section>
+</article>
+@section PageScripts
+{
+    <script>
+        yepnope([
+            { test: Modernizr.canvas, nope: ['@Url.Content("~/Scripts/ExCanvas.js")'] },
+            { test: Modernizr.websockets, nope: ['@Url.Content("~/Scripts/SwfObject.js")', '@Url.Content("~/Scripts/Web_Socket.js")'], complete: function () { WEB_SOCKET_SWF_LOCATION = '@Url.Content("~/Scripts/WebSocketMain.swf")' } },
+        ]);
+    </script>
+    <script src="@Url.Content("~/Scripts/jQuery.Flot.js")"></script>
+    <script src="@Url.Content("~/Scripts/jQuery.Flot.Resize.js")"></script>
+    <script src="@Url.Content("~/Scripts/jQuery.Sparkline.js")"></script>
+    <script src="@Url.Content("~/Scripts/jQuery.Tools.min.js")"></script>
+    <script>
+        var socket;
+
+        function LogMessage(msg) {
+            $('#RecentActivity ul').append('<li>' + msg + '</li>');
+        }
+
+        function refreshData(dateValue) {
+            var day = (dateValue.getDate() < 10 ? '0' : '') + dateValue.getDate();
+            var month = ((dateValue.getMonth() + 1) < 10 ? '0' : '') + (dateValue.getMonth() + 1);
+            var year = dateValue.getFullYear();
+            var dateString = (year + '-' + month + '-' + day);
+
+            $.getJSON('@Url.Action("SalesHistory")?date=' + dateString, function (data) {
+                $.plot($('#MainChart'), [data], { xaxis: { mode: 'time'} });
+            });
+
+            if (dateValue === new Date()) {
+                // enable live stream
+            }
+            else {
+                // GET /Home/RecentActivity
+                // get snapshot from previous date
+            }
+
+            $.getJSON('@Url.Action("KeyPerformanceIndicators")?date=' + dateString, function (data) {
+                $('#RecentOrders strong').text(data.RecentOrders.CurrentValue);
+                $('#RecentOrders span:first').sparkline(data.RecentOrders.HistoricalValues, { width: '150px' });
+                $('#AverageOrderValue strong').text('$' + data.AverageOrderValue.CurrentValue);
+                $('#AverageOrderValue span:first').sparkline(data.AverageOrderValue.HistoricalValues, { width: '150px' });
+                $('#NewCustomerRatio strong').text(data.NewCustomerRatio.CurrentValue);
+                $('#NewCustomerRatio span:first').sparkline(data.NewCustomerRatio.HistoricalValues, { type: 'bar', barColor: '#aaf', width: '150px' });
+                $('#NewCustomerRatio span:first').sparkline(data.NewCustomerRatio.HistoricalUniqueCustomerValues, { composite: true, fillColor: false, lineColor: 'red', width: '150px' });
+                $('#UniqueSiteVisitors strong').text(data.UniqueSiteVisitors.CurrentValue);
+                $('#UniqueSiteVisitors span:first').sparkline(data.UniqueSiteVisitors.HistoricalValues, { width: '150px' });
+            });
+        }
+
+        $(function () {
+            $("#DashboardDate").dateinput({
+                change: function (event, date) { refreshData(this.getValue()); },
+                format: 'mmmm d, yyyy',
+                max: new Date()
+            });
+
+            $('#RecentOrders').prepend('<span />');
+            $('#AverageOrderValue').prepend('<span />');
+            $('#NewCustomerRatio').prepend('<span />');
+            $('#UniqueSiteVisitors').prepend('<span />');
+
+            refreshData(new Date());
+
+            if (window.WebSocket === undefined) {
+                LogMessage('Sockets not supported');
+            } else {
+                try {
+                    //                    var host = 'ws://localhost:4502/subscribe?text=msft';
+                    //                    socket = new WebSocket(host);
+
+                    //                    socket.onopen = function () {
+                    //                        LogMessage('Socket opened');
+                    //                    }
+
+                    //                    socket.onmessage = function (msg) {
+                    //                        LogMessage('Received: ' + msg.data);
+                    //                    }
+
+                    //                    socket.onclose = function () {
+                    //                        LogMessage('Socket closed');
+                    //                    }
+                } catch (exception) {
+                    LogMessage(exception);
+                }
+            }
+        });
+    </script>
+}

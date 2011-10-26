@@ -1,0 +1,92 @@
+﻿@{
+    Layout = "~/Views/Shared/_Dialog.cshtml";
+}
+@* Below we are showing raw markup, not the MVC helpers as you would typically use *@
+<form id="EditForm">
+<fieldset>
+    <div>
+        <label>
+            Name</label>
+        <input id="FirstName" type="text" placeholder="First Name" required="required" />
+        <input id="LastName" type="text" placeholder="Last Name" required="required" />
+    </div>
+    <div>
+        <label>
+            Country</label>
+        <input id="Country" type="text" list="Countries" size="40">
+            <datalist id="Countries">
+                <option value="Canada" />
+                <option value="France" />
+                <option value="Germany" />
+                <option value="Italy" />
+                <option value="Japan" />
+                <option value="Russia" />
+                <option value="United Kingdom" />
+                <option value="United States" />
+            </datalist>
+        </input>
+    </div>
+    <div>
+        <label>
+            Address Line 1</label>
+        <input type="text" placeholder="Street address, P.O. box, company name, c/o" required="required" />
+    </div>
+    <div>
+        <label>
+            Address Line 2</label>
+        <input type="text" placeholder="Apartment, suite, unit, building, floor, etc." />
+    </div>
+    <div>
+        <label>
+            City</label>
+        <input type="text" />
+    </div>
+    <div>
+        <label>
+            Province</label>
+        <input type="text" />
+    </div>
+    <div>
+        <label>
+            Postal Code</label>
+        <input type="text" />
+    </div>
+    <div>
+        <label>
+            Phone Number</label>
+        <input type="tel" pattern="\d{10}" title="Phone numbers should contain digits (i.e. 4169996738)" />
+    </div>
+    <div>
+        <label>
+            Email Address</label>
+        <input type="email" placeholder="e.g. billg@microsoft.com" required="required" />
+    </div>
+    <div>
+        <label>
+            Web Site</label>
+        <input type="url" />
+    </div>
+    <div class="commands">
+        <input id="Submit" type="submit" value="Save" />
+        <input id="Cancel" type="button" value="Cancel" />
+    </div>
+</fieldset>
+</form>
+@section PageScripts
+{
+    <script>
+        yepnope({
+            test: Modernizr.inputtypes.email && Modernizr.input.required && Modernizr.input.placeholder && Modernizr.input.pattern,
+            nope: ['@Url.Content("~/Scripts/H5f.js")'],
+            callback: function (url, result, key) {
+                H5F.setup(document.getElementById("EditForm"));
+            }
+        });
+    </script>
+    <script>
+        $('#Cancel').click(function (e) {
+            var window = $("#NewDialog").data("kendoWindow");
+            window.close();
+        });
+    </script>
+}

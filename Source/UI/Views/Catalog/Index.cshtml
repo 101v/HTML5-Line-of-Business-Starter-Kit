@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Catalog";
+}
+<article class="row" role="main">
+    <h1>
+        Products</h1>
+    <section class="right col scroll-y" role="document">
+        <h2>Results</h2>
+        <ul id="Products">
+            <li><a id="One" href="#">one</a></li>
+            <li><a href="#">two</a></li>
+            <li><a href="#">three</a></li>
+            <li><a href="#">four</a></li>
+            <li><a href="#">five</a></li>
+        </ul>
+    </section>
+    <aside class="left col" role="complementary">
+        <h2>
+            Categories</h2>
+        <ul id="Filters">
+            <li><a href="#">Sprockets</a></li>
+            <li><a href="#">Widgets</a></li>
+        </ul>
+    </aside>
+</article>
+@section PageScripts
+{
+    <script>
+        yepnope([
+            { test: Modernizr.draganddrop, nope: ['@Url.Content("~/Scripts/DragDropHelpers.js")'], complete: function () { DragDropHelpers.fixVisualCues = true; } }
+        ]);
+    </script>
+    <script>
+
+        function dragStartEvent(e) {
+            console.log("Drag Event started");
+            $(e.target).addClass('dragging')
+
+        }
+
+        function dragEvent(e) {
+            //console.log("Currently dragging");
+        }
+
+        function dragEndEvent(e) {
+            console.log("Drag Event stopped");
+            $(e.target).removeClass('dragging')
+        }
+
+        function dragOverEvent(e) {
+            debugger;
+            e.preventDefault();
+        }
+
+        function dropEvent(e) {
+            showMessage("Drop event happened on node with id " + this.id);
+            EventHelpers.preventDefault(e);
+        }
+        $(function () {
+            // http://www.useragentman.com/blog/2010/01/10/cross-browser-html5-drag-and-drop/
+            $('#Products a').attr('draggable', 'true');
+            $('#Products')
+                .bind('dragstart', dragStartEvent)
+                .bind('drag', dragEvent)
+                .bind('dragend', dragEndEvent);
+        });
+    </script>
+}

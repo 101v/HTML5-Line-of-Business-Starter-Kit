@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+<article class="row scroll-y" role="main">
+    <h1>
+        Customers</h1>
+    <section class="right col" role="document">
+        <h2>
+            Results</h2>
+        <div role="toolbar">
+            <ul role="toolbar">
+                <li class="CustomerNew"><a href="#">New Customer</a></li>
+                <li class="Refresh"><a href="#">Refresh</a></li>
+                <li class="Options"><a href="#">Column Options</a></li>
+            </ul>
+        </div>
+        <table id="Results">
+            <thead>
+                <tr>
+                    <th data-field="name">
+                        Name
+                    </th>
+                    <th data-field="joined">
+                        Joined
+                    </th>
+                    <th data-field="lastorder">
+                        Last Order
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-id="0001"> @* Kendo UI's grid control currently strips out data-* attributes *@
+                    <td>
+                        James Walton
+                    </td>
+                    <td>
+                        15-Jan-2005
+                    </td>
+                    <td>
+                        09-Dec-2010
+                    </td>
+                </tr>
+                <tr data-id="0002">
+                    <td>
+                        Sarah Mendez
+                    </td>
+                    <td>
+                        15-Jan-2005
+                    </td>
+                    <td>
+                        09-Dec-2010
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <aside class="left col" role="complementary">
+        <h2>
+            Filter By</h2>
+        <ul id="Filters">
+            <li><a href="#">Recently Added</a></li>
+            <li><a href="#">Active within 60 days</a></li>
+        </ul>
+        <h2>
+            Preview Pane</h2>
+        <ul id="CustomerPreview">
+            <li data-binding="Name">Name</li>
+            <li data-binding="EmailAddress">Email</li>
+            <li data-binding="PhoneNumber">Phone Number</li>
+            <li data-binding="OrderHistory"><span></span><strong></strong> Orders</li>
+        </ul>
+    </aside>
+</article>
+<div id="NewDialog">
+</div>
+@section PageScripts
+{
+    <script>
+        yepnope([
+            { test: Modernizr.canvas, nope: ['@Url.Content("~/Scripts/ExCanvas.js")'] }
+        ]);
+    </script>
+    <link href="@Url.Content("~/Styles/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Styles/kendo.kendo.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/Kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jQuery.Sparkline.js")"></script>
+    <script>
+        function onRowSelected(e) {
+            var selected = $.map(this.select(), function (item) {
+                return $(item.cells[0]).text().trim();
+            });
+            window.postMessage(selected.join(", "), document.documentURI);
+        }
+
+        $(function () {
+            $('#Results').kendoGrid({
+                selectable: 'row',
+                height: '100%',
+                change: onRowSelected
+            });
+            $('#NewDialog').kendoWindow({
+                title: 'New Customer',
+                modal: true,
+                width: '600px',
+                height: '450px',
+                visible: false
+            }).data('kendoWindow');
+        });
+
+        $('.CustomerNew a').click(function (e) {
+            var window = $("#NewDialog").data("kendoWindow");
+            window.refresh('@Url.Action("New")');
+            window.center();
+            window.open();
+        });
+
+        window.addEventListener('message', function (event) {
+            console.log('received response:  ', event.data);
+            $.getJSON('@Url.Action("Preview")?id=' + event.data, function (data) {
+                $('#CustomerPreview li[data-binding="Name"]').text(data.FirstName + ' ' + data.LastName);
+                $('#CustomerPreview li[data-binding="EmailAddress"]').text(data.EmailAddress);
+                $('#CustomerPreview li[data-binding="PhoneNumber"]').text(data.PhoneNumber);
+                var orderTotal = 0;
+                for (i = 0; i < data.MonthlyOrders.length; i += 1) {
+                    orderTotal += data.MonthlyOrders[i];
+                }
+                $('#CustomerPreview li[data-binding="OrderHistory"] strong').text(orderTotal);
+                $('#CustomerPreview li[data-binding="OrderHistory"] span').sparkline(data.MonthlyOrders, { type: 'bar' });
+            });
+        }, false);
+    </script>
+}

@@ -1,0 +1,296 @@
+/* Page Layout - http://blog.stevensanderson.com/2011/10/05/full-height-app-layouts-a-css-trick-to-make-it-easier/ */
+html, body {
+  overflow: hidden;
+}
+body {
+  margin: 0;
+}
+body, input {
+  font-family: Segoe UI;
+}
+.row, .col {
+  overflow: hidden;
+  position: absolute;
+}
+.row {
+  left: 0;
+  right: 0;
+}
+.col {
+  top: 0;
+  bottom: 0;
+}
+.left.col {
+  width: 240px;
+}
+.right.col {
+  left: 250px;
+  right: 0;
+  padding-right: 20px;
+}
+.scroll-x {
+  overflow-x: auto;
+}
+.scroll-y {
+  overflow-y: auto;
+}
+.scroll-y.row {
+  padding-right: 20px;
+}
+.collapsedlist {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+/* Links */
+a, a:visited {
+  color: #0066dd;
+  text-decoration: none;
+}
+a:hover {
+  color: #ff6600;
+}
+a.selected, #UserTools a, #UserTools a:visited {
+  color: #333333;
+}
+/* Header */
+header {
+  height: 75px;
+  top: 0;
+  border-left: 10px solid #0066dd;
+}
+header nav {
+  display: block;
+  position: absolute;
+  left: 30px;
+}
+header nav ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+header nav li {
+  display: block;
+  font-size: 18px;
+  float: left;
+  line-height: 110px;
+  margin: 0 10px;
+  text-align: center;
+  text-transform: lowercase;
+}
+header #UserTools {
+  display: block;
+  position: absolute;
+  right: 0;
+}
+header #UserTools ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+header #UserTools li {
+  display: block;
+  float: left;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 44px;
+  margin-right: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}
+header #UserTools li:last-child {
+  clear: both;
+  float: right;
+  line-height: 1;
+}
+/* Footer */
+footer {
+  border-top: 1px solid #e6e6e6;
+  bottom: 0;
+  height: 20px;
+}
+footer ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+footer li:first-child {
+  margin-left: 40px;
+}
+footer li {
+  display: block;
+  float: left;
+  margin: 0 10px;
+  font-size: 14px;
+  text-align: left;
+  text-transform: lowercase;
+}
+footer li:last-child {
+  float: clear;
+  position: absolute;
+  right: 10px;
+}
+/* Body */
+article[role="main"] {
+  top: 75px;
+  bottom: 20px;
+  margin-left: 50px;
+}
+article[role="main"] .k-grid {
+  clear: both;
+}
+section[role="document"], aside[role="complementary"] {
+  top: 75px;
+  bottom: 20px;
+}
+h1 {
+  font-size: 32px;
+  font-weight: normal;
+  text-transform: lowercase;
+  margin-bottom: 0;
+}
+h2 {
+  font-size: 14px;
+  padding: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #e6e6e6;
+}
+div[role="toolbar"] {
+  width: 100%;
+  /* As you finalize the images, optimize by turning into a CSS Sprite */
+
+}
+div[role="toolbar"] ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+div[role="toolbar"] li:first-child {
+  padding-left: 0;
+}
+div[role="toolbar"] li {
+  display: block;
+  float: left;
+  padding: 0 0 3px 10px;
+}
+div[role="toolbar"] a {
+  border: 1px solid #ffffff;
+  display: block;
+  padding: 0 3px 0 23px;
+  background-position: 3px center;
+  background-repeat: no-repeat;
+}
+div[role="toolbar"] a:hover {
+  border: 1px solid #9a9a9a;
+  color: #000000;
+  background-color: #e6e6e6;
+}
+div[role="toolbar"] .CustomerNew a {
+  background-image: url('/Images/CustomerNew.png');
+}
+div[role="toolbar"] .Refresh a {
+  background-image: url('/Images/Refresh.png');
+}
+div[role="toolbar"] .Options a {
+  background-image: url('/Images/Options.png');
+}
+#Filters {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+/* Dialog */
+article[role="dialog"] fieldset {
+  border: none;
+}
+article[role="dialog"] fieldset div {
+  margin-bottom: 5px;
+}
+article[role="dialog"] fieldset div:last-child {
+  margin-bottom: 0;
+}
+article[role="dialog"] fieldset label {
+  display: inline-block;
+  color: #4d4d4d;
+  width: 115px;
+}
+article[role="dialog"] fieldset .commands {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px;
+}
+/* Dashboard */
+#DashboardDate {
+  border: none;
+  font-size: 20px;
+  padding: 4px;
+  text-transform: lowercase;
+}
+#DashboardDate:hover {
+  background: #ffffd8 url('/images/Edit.png') no-repeat right center;
+  cursor: pointer;
+}
+#DashboardDate:focus {
+  background: #FFFFD8;
+}
+#SalesHistory #MainChart {
+  width: 100%;
+  height: 150px;
+}
+#RecentActivity {
+  float: left;
+  width: 48%;
+}
+#KeyPerformanceIndicators {
+  float: right;
+  width: 48%;
+}
+#KeyPerformanceIndicators ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+#KeyPerformanceIndicators li {
+  margin: 15px 10px;
+}
+#KeyPerformanceIndicators li span {
+  display: inline-block;
+  width: 155px;
+}
+#KeyPerformanceIndicators li strong {
+  padding-left: 7px;
+  font-size: 1.1em;
+}
+/* Customers */
+#CustomerPreview {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+/* Catalog */
+#Products {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+#Products li {
+  float: left;
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+#Products a {
+  display: block;
+  cursor: move;
+  text-decoration: none;
+  text-align: center;
+  border: solid 1px #999;
+  width: 100px;
+  height: 100px;
+}
+#Products .dragging {
+  border: 1px dotted #9a9a9a;
+  background-color: #e6e6e6;
+}
