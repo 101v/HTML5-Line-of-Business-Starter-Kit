@@ -40,7 +40,6 @@ namespace FabrikamWidgets.UI.Controllers
         public ActionResult ActivityStream(DateTime? date)
         {
             throw new NotImplementedException();
-            // http://activitystrea.ms/
         }
 
         public ActionResult KeyPerformanceIndicators(DateTime date)
@@ -63,10 +62,12 @@ namespace FabrikamWidgets.UI.Controllers
             data.UniqueSiteVisitors = new ExpandoObject();
             data.UniqueSiteVisitors.CurrentValue = uniqueSiteVisitors.Values.LastOrDefault();
             data.UniqueSiteVisitors.HistoricalValues = uniqueSiteVisitors.Values.ToArray();
-            return new JsonNetResult() {
+            return new JsonNetResult()
+            {
                 Data = data,
                 HttpStatusCode = (int)System.Net.HttpStatusCode.OK,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
         }
     }
 }

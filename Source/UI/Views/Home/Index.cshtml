@@ -22,10 +22,10 @@
         <h2>
             Key Performance Indicators</h2>
         <ul>
-            <li id="RecentOrders"><strong>46</strong> Orders</li>
-            <li id="AverageOrderValue"><strong>$125.64</strong> Average Order Value</li>
-            <li id="NewCustomerRatio"><strong>33.45%</strong> New Customer Ratio</li>
-            <li id="UniqueSiteVisitors"><strong>123</strong> Unique Site Visitors</li>
+            <li id="RecentOrders"><strong></strong> Orders</li>
+            <li id="AverageOrderValue"><strong></strong> Average Order Value</li>
+            <li id="NewCustomerRatio"><strong></strong> New Customer Ratio</li>
+            <li id="UniqueSiteVisitors"><strong></strong> Unique Site Visitors</li>
         </ul>
     </section>
 </article>
@@ -67,6 +67,12 @@
     <script>
         var socket;
 
+        function datesEqual(valueA, valueB) {
+            return ((valueA.getDate() == valueB.getDate()) &&
+                    (valueA.getMonth() == valueB.getMonth()) &&
+                    (valueA.getYear() == valueB.getYear()));
+        }
+
         function refreshData(dateValue) {
             var day = (dateValue.getDate() < 10 ? '0' : '') + dateValue.getDate();
             var month = ((dateValue.getMonth() + 1) < 10 ? '0' : '') + (dateValue.getMonth() + 1);
@@ -77,13 +83,15 @@
                 $.plot($('#MainChart'), [data], { xaxis: { mode: 'time'} });
             });
 
-//            if (dateValue === new Date()) {
-//                // enable live stream
-//            }
-//            else {
-//                // GET /Home/RecentActivity
-//                // get snapshot from previous date
-//            }
+
+            if (socket && socket.readyState == socket.OPEN && datesEqual(dateValue, new Date())) {
+                // re-enable live stream
+                socket.send('start');
+            }
+            else if(socket && socket.readyState == socket.OPEN) {
+                // TODO: get snapshot from previous date
+                socket.close();
+            }
 
             $.getJSON('@Url.Action("KeyPerformanceIndicators")?date=' + dateString, function (data) {
                 $('#RecentOrders strong').text(data.RecentOrders.CurrentValue);

@@ -37,7 +37,7 @@ namespace FabrikamWidgets.UI
 
         private void TimerCallback(object state)
         {
-            // Send random activity update message
+            // var activity = activityService.Retrieve(date);
             //var activity = new Activity
             //{
             //    Published = DateTime.UtcNow,
