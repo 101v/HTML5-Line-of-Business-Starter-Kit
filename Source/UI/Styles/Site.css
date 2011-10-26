@@ -294,3 +294,7 @@ article[role="dialog"] fieldset .commands {
   border: 1px dotted #9a9a9a;
   background-color: #e6e6e6;
 }
+#Products .dragtarget {
+  border: 1px dotted #662900;
+  background-color: #e6e6e6;
+}

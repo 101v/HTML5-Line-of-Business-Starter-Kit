@@ -30,38 +30,45 @@
             { test: Modernizr.draganddrop, nope: ['@Url.Content("~/Scripts/DragDropHelpers.js")'], complete: function () { DragDropHelpers.fixVisualCues = true; } }
         ]);
     </script>
+    @* For more on Drag-and-Drop check out http://www.useragentman.com/blog/2010/01/10/cross-browser-html5-drag-and-drop/ *@
     <script>
-
         function dragStartEvent(e) {
-            console.log("Drag Event started");
-            $(e.target).addClass('dragging')
-
-        }
-
-        function dragEvent(e) {
-            //console.log("Currently dragging");
+            $(e.target).addClass('dragging');
         }
 
         function dragEndEvent(e) {
-            console.log("Drag Event stopped");
-            $(e.target).removeClass('dragging')
+            $('#Products .dragging').removeClass('dragging');
+            $('#Products .dragtarget').removeClass('dragtarget');
+        }
+
+        function dragEnterEvent(e) {
+            $(e.target).addClass('dragtarget');
         }
 
         function dragOverEvent(e) {
-            debugger;
             e.preventDefault();
         }
 
-        function dropEvent(e) {
-            showMessage("Drop event happened on node with id " + this.id);
-            EventHelpers.preventDefault(e);
+        function dragLeaveEvent(e) {
+            $(e.target).removeClass('dragtarget');
         }
+
+        function dropEvent(e) {
+            var source = $('#Products a.dragging').parent();
+            var target = $(e.target).parent();
+            target.after(source);
+            e.preventDefault();
+        }
+
         $(function () {
-            // http://www.useragentman.com/blog/2010/01/10/cross-browser-html5-drag-and-drop/
-            $('#Products a').attr('draggable', 'true');
+            $('#Products a')
+                .attr('draggable', 'true')
+                .bind('dragenter', dragEnterEvent)
+                .bind('dragover', dragOverEvent)
+                .bind('dragleave', dragLeaveEvent)
+                .bind('drop', dropEvent);
             $('#Products')
                 .bind('dragstart', dragStartEvent)
-                .bind('drag', dragEvent)
                 .bind('dragend', dragEndEvent);
         });
     </script>

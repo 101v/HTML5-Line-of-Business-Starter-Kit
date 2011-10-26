@@ -61,3 +61,4 @@ article[role="dialog"] fieldset .commands{position:absolute;bottom:0;right:0;pad
 #Products li{float:left;display:block;width:100px;height:100px}
 #Products a{display:block;cursor:move;text-decoration:none;text-align:center;border:solid 1px #999;width:100px;height:100px}
 #Products .dragging{border:1px dotted #9a9a9a;background-color:#e6e6e6}
+#Products .dragtarget{border:1px dotted #662900;background-color:#e6e6e6}
