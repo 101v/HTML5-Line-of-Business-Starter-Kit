@@ -32,6 +32,7 @@ namespace FabrikamWidgets.UI.Controllers
             return new JsonNetResult()
             {
                 Data = data.ToList().ConvertAll(item => new object[] { item.Key.ToJavascriptTimestamp(), item.Value }),
+                HttpStatusCode = (int)System.Net.HttpStatusCode.OK,
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
@@ -62,7 +63,10 @@ namespace FabrikamWidgets.UI.Controllers
             data.UniqueSiteVisitors = new ExpandoObject();
             data.UniqueSiteVisitors.CurrentValue = uniqueSiteVisitors.Values.LastOrDefault();
             data.UniqueSiteVisitors.HistoricalValues = uniqueSiteVisitors.Values.ToArray();
-            return new JsonNetResult() { Data = data, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return new JsonNetResult() {
+                Data = data,
+                HttpStatusCode = (int)System.Net.HttpStatusCode.OK,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }
 }

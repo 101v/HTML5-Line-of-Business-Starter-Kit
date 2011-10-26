@@ -34,7 +34,30 @@
     <script>
         yepnope([
             { test: Modernizr.canvas, nope: ['@Url.Content("~/Scripts/ExCanvas.js")'] },
-            { test: Modernizr.websockets, nope: ['@Url.Content("~/Scripts/SwfObject.js")', '@Url.Content("~/Scripts/Web_Socket.js")'], complete: function () { WEB_SOCKET_SWF_LOCATION = '@Url.Content("~/Scripts/WebSocketMain.swf")' } },
+            { test: Modernizr.websockets, nope: ['@Url.Content("~/Scripts/SwfObject.js")', '@Url.Content("~/Scripts/Web_Socket.js")'], complete:
+                function () {
+                    WEB_SOCKET_DEBUG = true;
+                    WEB_SOCKET_SWF_LOCATION = '@Url.Content("~/Scripts/WebSocketMain.swf")';
+
+                    try {
+                        var host = 'ws://localhost:4502/subscribe';
+                        if (window.MozWebSocket != undefined) {
+                            socket = new MozWebSocket(host)
+                        } else {
+                            socket = new WebSocket(host);
+                        }
+
+                        socket.onmessage = function (msg) {
+                            if ($("#RecentActivity ul").children().size() > 5) {
+                                $("#RecentActivity ul li:last-child").remove();
+                            }
+                            $("#RecentActivity ul").prepend('<li>' + msg.data + '<\/li>');
+                        }
+                    } catch (exception) {
+                        LogMessage(exception);
+                    }
+                } 
+            },
         ]);
     </script>
     <script src="@Url.Content("~/Scripts/jQuery.Flot.js")"></script>
@@ -43,10 +66,6 @@
     <script src="@Url.Content("~/Scripts/jQuery.Tools.min.js")"></script>
     <script>
         var socket;
-
-        function LogMessage(msg) {
-            $('#RecentActivity ul').append('<li>' + msg + '</li>');
-        }
 
         function refreshData(dateValue) {
             var day = (dateValue.getDate() < 10 ? '0' : '') + dateValue.getDate();
@@ -58,13 +77,13 @@
                 $.plot($('#MainChart'), [data], { xaxis: { mode: 'time'} });
             });
 
-            if (dateValue === new Date()) {
-                // enable live stream
-            }
-            else {
-                // GET /Home/RecentActivity
-                // get snapshot from previous date
-            }
+//            if (dateValue === new Date()) {
+//                // enable live stream
+//            }
+//            else {
+//                // GET /Home/RecentActivity
+//                // get snapshot from previous date
+//            }
 
             $.getJSON('@Url.Action("KeyPerformanceIndicators")?date=' + dateString, function (data) {
                 $('#RecentOrders strong').text(data.RecentOrders.CurrentValue);
@@ -92,29 +111,6 @@
             $('#UniqueSiteVisitors').prepend('<span />');
 
             refreshData(new Date());
-
-            if (window.WebSocket === undefined) {
-                LogMessage('Sockets not supported');
-            } else {
-                try {
-                    //                    var host = 'ws://localhost:4502/subscribe?text=msft';
-                    //                    socket = new WebSocket(host);
-
-                    //                    socket.onopen = function () {
-                    //                        LogMessage('Socket opened');
-                    //                    }
-
-                    //                    socket.onmessage = function (msg) {
-                    //                        LogMessage('Received: ' + msg.data);
-                    //                    }
-
-                    //                    socket.onclose = function () {
-                    //                        LogMessage('Socket closed');
-                    //                    }
-                } catch (exception) {
-                    LogMessage(exception);
-                }
-            }
         });
     </script>
 }

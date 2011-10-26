@@ -17,7 +17,6 @@ namespace FabrikamWidgets.UI.Controllers
             this.salesDataWarehouseService = salesDataWarehouseService;
         }
 
-
         public ActionResult Index()
         {
             return View();
@@ -34,6 +33,7 @@ namespace FabrikamWidgets.UI.Controllers
             return new JsonNetResult()
             {
                 Data = data,
+                HttpStatusCode = (int)System.Net.HttpStatusCode.OK,
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }

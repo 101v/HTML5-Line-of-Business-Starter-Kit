@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.ServiceModel;
 using System.Threading;
 using Microsoft.ServiceModel.WebSockets;
@@ -10,21 +9,11 @@ namespace FabrikamWidgets.UI
     public class ActivitySocket : WebSocketsService
     {
         private bool disposed;
-        private string[] subscription;
         private Timer timer;
-        private Companies symbols = new Companies(
-            new CompanyInfo { StockSymbol = "msft", StockPrice = 25 },
-            new CompanyInfo { StockSymbol = "appl", StockPrice = 90 },
-            new CompanyInfo { StockSymbol = "ibm", StockPrice = 130 },
-            new CompanyInfo { StockSymbol = "orcl", StockPrice = 26 });
 
         public override void OnOpen()
         {
-            subscription = HttpRequestUri.Query.Split(new char[] { '?', '=', '+' }, StringSplitOptions.RemoveEmptyEntries);
-            if (subscription.Length > 1)
-            {
-                timer = new Timer(TimerCallback, null, 0, 1000);
-            }
+            timer = new Timer(TimerCallback, null, 0, Convert.ToInt32(TimeSpan.FromSeconds(15).TotalMilliseconds));
 
             base.OnOpen();
         }
@@ -39,11 +28,6 @@ namespace FabrikamWidgets.UI
                     {
                         this.timer.Dispose();
                     }
-
-                    if (this.symbols != null)
-                    {
-                        this.symbols.Dispose();
-                    }
                 }
                 disposed = true;
             }
@@ -53,22 +37,42 @@ namespace FabrikamWidgets.UI
 
         private void TimerCallback(object state)
         {
-            string result = string.Empty;
-            this.symbols.UpdateValues();
-            for (var cnt = 1; cnt < this.subscription.Length; cnt++)
-            {
-                CompanyInfo info;
-                if (this.symbols.TryGetValue(this.subscription[cnt], out info))
-                {
-                    result += string.Format(CultureInfo.InvariantCulture, "{0} ${1:0.00} ", subscription[cnt].ToUpperInvariant(), info.StockPrice);
-                }
-                else
-                {
-                    result += string.Format(CultureInfo.InvariantCulture, "{0} not found ", subscription[cnt].ToUpperInvariant());
-                }
-            }
+            // Send random activity update message
+            //var activity = new Activity
+            //{
+            //    Published = DateTime.UtcNow,
+            //    Actor = new ActivityObject
+            //    {
+            //        Url = "http://foo.com",
+            //        ObjectType = "Customer",
+            //        Id = "1234",
+            //        DisplayName = "Contoso Bank",
+            //    },
+            //    Verb = "created a new order",
+            //    @Object = new ActivityObject
+            //    {
+            //        Url = "http://bar.com",
+            //        ObjectType = "Order",
+            //        Id = "4321",
+            //        DisplayName = "Order 43212",
+            //    }
+            //};
 
-            this.SendMessage(result);
+            //using (var writer = new StringWriter())
+            //{
+            //    var settings = new JsonSerializerSettings()
+            //    {
+            //        ContractResolver = new CamelCasePropertyNamesContractResolver()
+            //    };
+            //    JsonSerializer.Create(settings).Serialize(writer, activity);
+            //    SendMessage(writer.ToString());
+            //}
+
+            var result = String.Format(
+                "<a href=\"#\">{0}</a> placed a new order for {1} widgets<br /><small>{2} · <a href=\"#\">View</a> · <a href=\"#\">Comment</a></small>",
+                "Contoso Bank", 23, DateTime.Now);
+
+            SendMessage(result);
         }
     }
 }
